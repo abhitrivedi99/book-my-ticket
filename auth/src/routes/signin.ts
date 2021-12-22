@@ -4,32 +4,39 @@ import { signinValidator, validate } from '../middlewares/validator'
 import { User } from '../models/user'
 import { handleError, handleSuccess } from '../helper/response'
 import { Password } from '../services/password'
+import { logger } from '../helper/logger'
 
 const router = Router()
 
 router.post('/api/users/signin', signinValidator(), validate, async (req: Request, res: Response) => {
-	const { email, password } = req.body
+	logger.info('Inside signin Controller')
+	try {
+		const { email, password } = req.body
 
-	const existingUser = await User.findOne({ email })
-	// console.log(existingUser)
+		const existingUser = await User.findOne({ email })
+		// console.log(existingUser)
 
-	if (!existingUser) {
-		return handleError({ res, msg: 'Invalid credentials', statusCode: 400, data: undefined })
+		if (!existingUser) {
+			return handleError({ res, msg: 'Invalid credentials', statusCode: 400, data: undefined })
+		}
+
+		const passwordMatch = await Password.compare(password, existingUser.password)
+
+		if (!passwordMatch) {
+			return handleError({ res, msg: 'Invalid credentials', statusCode: 400, data: undefined })
+		}
+
+		// Generate JWT
+		const userJwt = jwt.sign({ id: existingUser.id, email: existingUser.email }, process.env.JWT_KEY!)
+
+		// Store it on object
+		req.session = { ...req.session, jwt: userJwt }
+
+		return handleSuccess({ res, msg: 'Sucess Signin', statusCode: 200, data: existingUser })
+	} catch (err) {
+		logger.debug(`${err}`)
+		return handleError({ res, msg: 'Something went wrong', statusCode: 500, data: undefined })
 	}
-
-	const passwordMatch = await Password.compare(password, existingUser.password)
-
-	if (!passwordMatch) {
-		return handleError({ res, msg: 'Invalid credentials', statusCode: 400, data: undefined })
-	}
-
-	// Generate JWT
-	const userJwt = jwt.sign({ id: existingUser.id, email: existingUser.email }, process.env.JWT_KEY!)
-
-	// Store it on object
-	req.session = { ...req.session, jwt: userJwt }
-
-	return handleSuccess({ res, msg: 'Sucess Signin', statusCode: 200, data: existingUser })
 })
 
 export { router as signinRouter }
