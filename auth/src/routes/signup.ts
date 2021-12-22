@@ -12,7 +12,7 @@ router.post('/api/users/signup', signupValidator(), validate, async (req: Reques
 	const existingUser = await User.findOne({ email })
 
 	if (existingUser) {
-		return handleError({ res, msg: 'User already exists', statusCode: 400 })
+		return handleError({ res, msg: 'User already exists', statusCode: 400, data: undefined })
 	}
 
 	const user = User.build({ email, password })

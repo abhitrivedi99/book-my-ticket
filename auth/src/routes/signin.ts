@@ -10,17 +10,17 @@ const router = Router()
 router.post('/api/users/signin', signinValidator(), validate, async (req: Request, res: Response) => {
 	const { email, password } = req.body
 
-	const existingUser = await User.findOne({email})
+	const existingUser = await User.findOne({ email })
 	// console.log(existingUser)
 
 	if (!existingUser) {
-		return handleError({ res, msg: 'Invalid credentials', statusCode: 400 })
+		return handleError({ res, msg: 'Invalid credentials', statusCode: 400, data: undefined })
 	}
 
 	const passwordMatch = await Password.compare(password, existingUser.password)
 
 	if (!passwordMatch) {
-		return handleError({ res, msg: 'Invalid credentials', statusCode: 400 })
+		return handleError({ res, msg: 'Invalid credentials', statusCode: 400, data: undefined })
 	}
 
 	// Generate JWT
