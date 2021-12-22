@@ -8,7 +8,6 @@ export const validate = (req: Request, res: Response, next: NextFunction): any =
 		return `${location}[${param}]: ${msg}`
 	}
 	const result = validationResult(req).formatWith(errorFormatter)
-	console.log(result)
 
 	if (!result.isEmpty()) return handleError({ res, statusCode: 422, msg: 'Validation failed' })
 
@@ -20,4 +19,8 @@ export const signupValidator = () => {
 		body('email').isEmail().withMessage('Email must be valid'),
 		body('password').trim().isLength({ min: 4, max: 20 }).withMessage('Password must be between 4 and 20'),
 	]
+}
+
+export const signinValidator = () => {
+	return [body('email').isEmail().withMessage('Email must be valid'), body('password').trim().notEmpty().withMessage('Password must be valid')]
 }
