@@ -19,12 +19,17 @@ router.post('/api/users/signup', signupValidator(), validate, async (req: Reques
 	await user.save()
 
 	// Generate JWT
-	const userJwt = jwt.sign({ id: user.id, email: user.email }, '1234566')
+	const userJwt = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_KEY!)
 
 	// Store it on object
 	req.session = { ...req.session, jwt: userJwt }
 
-	return handleSuccess({ res, msg: 'Signup successfully', statusCode: 201, data: user })
+	return handleSuccess({
+		res,
+		msg: 'Signup successfully',
+		statusCode: 201,
+		data: user,
+	})
 })
 
 export { router as signupRouter }

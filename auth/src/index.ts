@@ -1,5 +1,6 @@
 import express, { json } from 'express'
 import mongoose from 'mongoose'
+import morgan from 'morgan'
 import cookieSession from 'cookie-session'
 import { currentUserRouter } from './routes/current-user'
 import { signinRouter } from './routes/signin'
@@ -10,11 +11,12 @@ const app = express()
 
 app.set('trust proxy', true)
 app.use(json())
+app.use(morgan('dev'))
 app.use(
 	cookieSession({
 		signed: false,
 		secure: true,
-	}),
+	})
 )
 
 app.use(currentUserRouter)
@@ -27,8 +29,13 @@ app.get('*', () => {
 })
 
 const start = async () => {
+	if (!process.env.JWT_KEY) {
+		throw new Error('JWT must be defined in environment')
+	}
+
 	try {
 		await mongoose.connect('mongodb://auth-mongo-srv:27017/auth')
+		console.log('Connected to DB')
 	} catch (err) {
 		console.error(err)
 	}
