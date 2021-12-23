@@ -6,6 +6,7 @@ import { currentUserRouter } from './routes/current-user'
 import { signinRouter } from './routes/signin'
 import { signoutRouter } from './routes/signout'
 import { signupRouter } from './routes/signup'
+import { logger } from './helper/logger'
 
 const app = express()
 
@@ -29,18 +30,19 @@ app.get('*', () => {
 })
 
 const start = async () => {
+	logger.info('Inside start Service')
 	if (!process.env.JWT_KEY) {
 		throw new Error('JWT must be defined in environment')
 	}
 
 	try {
 		await mongoose.connect('mongodb://auth-mongo-srv:27017/auth')
-		console.log('Connected to DB')
+		logger.info('Connected to mongo')
 	} catch (err) {
-		console.error(err)
+		logger.debug(`${err}`)
 	}
 
-	app.listen(3000, () => console.log('Listening on port 3000'))
+	app.listen(3000, () => logger.info('Listening on port 3000'))
 }
 
 start()
