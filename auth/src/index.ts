@@ -1,4 +1,5 @@
 import express, { json } from 'express'
+import 'express-async-errors'
 import mongoose from 'mongoose'
 import morgan from 'morgan'
 import cookieSession from 'cookie-session'
@@ -7,6 +8,8 @@ import { signinRouter } from './routes/signin'
 import { signoutRouter } from './routes/signout'
 import { signupRouter } from './routes/signup'
 import { logger } from './helper/logger'
+import { NotFoundError } from './errors/not-found-error'
+import { errorHandler } from './middlewares/error-handler'
 
 const app = express()
 
@@ -25,9 +28,11 @@ app.use(signinRouter)
 app.use(signoutRouter)
 app.use(signupRouter)
 
-app.get('*', () => {
-	throw new Error('Path does not exist on server')
+app.all('*', () => {
+	throw new NotFoundError()
 })
+
+app.use(errorHandler)
 
 const start = async () => {
 	logger.info('Inside start Service')
