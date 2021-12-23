@@ -4,10 +4,18 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "ts-node-dev --poll src/index.ts"
+		"start": "ts-node-dev --poll src/index.ts",
+		"test": "jest --watchAll --no-cache"
+	},
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"setupFilesAfterEnv": [
+			"./src/test/setup.ts"
+		]
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Abhishek Trivedi",
 	"license": "ISC",
 	"dependencies": {
 		"@types/bcrypt": "^5.0.0",
@@ -26,5 +34,13 @@
 		"ts-node-dev": "^1.1.8",
 		"typescript": "^4.5.4",
 		"winston": "^3.3.3"
+	},
+	"devDependencies": {
+		"@types/jest": "^27.0.3",
+		"@types/supertest": "^2.0.11",
+		"jest": "^27.4.5",
+		"mongodb-memory-server": "^6.5.0",
+		"supertest": "^6.1.6",
+		"ts-jest": "^27.1.2"
 	}
 }

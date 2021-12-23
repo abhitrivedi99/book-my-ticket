@@ -22,7 +22,6 @@ import { CustomError } from '../errors/custom-error'
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
 	logger.info('Inside errorHandler Middleware')
 	if (err instanceof CustomError) {
-		console.log(err)
 		return res.status(err.statusCode).send({ errors: err.serializeErrors() })
 	}
 
