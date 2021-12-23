@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
-import { handleError } from '../helper/response'
 import { logger } from '../helper/logger'
+import { ServerError } from '../errors/server-error'
 
 interface UserPayload {
 	id: string
@@ -30,6 +30,6 @@ export const currentUser = (req: Request, res: Response, next: NextFunction) => 
 		return next()
 	} catch (err) {
 		logger.debug(`${err}`)
-		return handleError({ res, msg: 'Something went wrong', statusCode: 500, data: undefined })
+		throw new ServerError()
 	}
 }
