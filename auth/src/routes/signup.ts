@@ -15,7 +15,7 @@ router.post('/api/users/signup', signupValidator(), validate, async (req: Reques
 	const existingUser = await User.findOne({ email })
 
 	if (existingUser) {
-		throw new BadRequestError('Invalid Credentials')
+		throw new BadRequestError('User already exists')
 	}
 
 	const user = User.build({ email, password })
