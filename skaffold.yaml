@@ -8,11 +8,19 @@ build:
   local:
     push: false
   artifacts:
-    - image: abhitrivedi99/bmt/auth
+    - image: abhitrivedi99/bmt-auth
       context: auth
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
           - src: "src/**/*.ts"
+            dest: .
+    - image: abhitrivedi99/bmt-client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "**/*.js"
             dest: .
