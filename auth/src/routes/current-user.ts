@@ -7,7 +7,7 @@ import { ServerError } from '../errors/server-error'
 
 const router = Router()
 
-router.get('/api/users/currentuser', currentUser, requireAuth, (req: Request, res: Response) => {
+router.get('/api/users/currentuser', currentUser, (req: Request, res: Response) => {
 	logger.info('Inside currentuser Controller')
 	try {
 		return handleSuccess({ res, data: req.user, msg: 'user data', statusCode: 200 })
