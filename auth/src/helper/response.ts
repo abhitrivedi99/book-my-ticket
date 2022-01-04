@@ -4,7 +4,7 @@ const handleSuccess = ({
 	res,
 	statusCode = 200,
 	msg,
-	data = {},
+	data = null,
 }: {
 	res: Response
 	msg: string
